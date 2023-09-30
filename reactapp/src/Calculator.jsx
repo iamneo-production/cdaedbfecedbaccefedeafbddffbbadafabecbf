@@ -25,7 +25,7 @@ class Calculator extends Component {
 
   addToDisplay = (value) => {
     const { displayValue } = this.state;
-    if (displayValue === '0') {
+    if (displayValue === '0' || this.state.operator) {
       this.setState({ displayValue: value });
     } else {
       this.setState({ displayValue: displayValue + value });
@@ -53,12 +53,14 @@ class Calculator extends Component {
   };
 
   setOperator = (operator) => {
-    const { displayValue } = this.state;
-    this.setState({
-      operator,
-      previousValue: displayValue,
-      displayValue: '0',
-    });
+    const { displayValue, previousValue } = this.state;
+    if (previousValue !== null) {
+      this.calculateResult();
+      this.setState({ operator, previousValue: this.state.displayValue });
+    } else {
+      this.setState({ operator, previousValue: displayValue });
+    }
+    this.setState({ displayValue: '0' });
   };
 
   render() {
@@ -73,28 +75,24 @@ class Calculator extends Component {
             <button onClick={() => this.handleButtonClick('9')}>9</button>
             <button onClick={() => this.setOperator('+')}>+</button>
           </div>
-          <br/>
           <div className="row">
             <button onClick={() => this.handleButtonClick('4')}>4</button>
             <button onClick={() => this.handleButtonClick('5')}>5</button>
             <button onClick={() => this.handleButtonClick('6')}>6</button>
             <button onClick={() => this.setOperator('-')}>-</button>
           </div>
-          <br/>
           <div className="row">
             <button onClick={() => this.handleButtonClick('1')}>1</button>
             <button onClick={() => this.handleButtonClick('2')}>2</button>
             <button onClick={() => this.handleButtonClick('3')}>3</button>
             <button onClick={() => this.setOperator('*')}>*</button>
           </div>
-          <br/>
           <div className="row">
             <button onClick={() => this.handleButtonClick('0')}>0</button>
             <button onClick={() => this.handleButtonClick('C')}>C</button>
             <button onClick={() => this.handleButtonClick('=')}>=</button>
             <button onClick={() => this.setOperator('/')}>/</button>
           </div>
-          <br/>
         </div>
       </div>
     );
