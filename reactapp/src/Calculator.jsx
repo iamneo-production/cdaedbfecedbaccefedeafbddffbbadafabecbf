@@ -8,8 +8,12 @@ function Calculator() {
   const [firstOperand, setFirstOperand] = useState(null);
   const [operator, setOperator] = useState(null);
   const [waitingForSecondOperand, setWaitingForSecondOperand] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleButtonClick = (value) => {
+    if (error) {
+      setError(null);
+    }
     if (waitingForSecondOperand) {
       setDisplayValue(value);
       setWaitingForSecondOperand(false);
@@ -43,7 +47,10 @@ function Calculator() {
       case '*':
         return prev * current;
       case '/':
-        if (current === 0) return 'Error';
+        if (current === 0) {
+          setError('Division by zero');
+          return 'Error';
+        }
         return prev / current;
       default:
         return current;
@@ -65,11 +72,13 @@ function Calculator() {
     setFirstOperand(null);
     setOperator(null);
     setWaitingForSecondOperand(false);
+    setError(null);
   };
 
   return (
     <div className="calculator">
       <div className="display">{displayValue}</div>
+      {error && <div className="error">{error}</div>}
       <div className="operator-display">{operator}</div>
       <div className="buttons">
         <div className="row">
