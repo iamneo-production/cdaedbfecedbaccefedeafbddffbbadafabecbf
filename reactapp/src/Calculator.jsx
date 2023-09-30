@@ -1,114 +1,76 @@
-// Calculator.js
-import Calculator from './Calculator.test';
 import React, { useState } from 'react';
-import './Calculator.css';
+import './Calculator';
 
 function Calculator() {
-  const [displayValue, setDisplayValue] = useState('0');
-  const [firstOperand, setFirstOperand] = useState(null);
-  const [operator, setOperator] = useState(null);
-  const [waitingForSecondOperand, setWaitingForSecondOperand] = useState(false);
-  const [error, setError] = useState(null);
+  const [num1, setNum1] = useState('');
+  const [num2, setNum2] = useState('');
+  const [result, setResult] = useState('');
+  const [error, setError] = useState('');
 
-  const handleButtonClick = (value) => {
-    if (error) {
-      setError(null);
-    }
-    if (waitingForSecondOperand) {
-      setDisplayValue(value);
-      setWaitingForSecondOperand(false);
+  const handleAdd = () => {
+    if (!num1 || !num2) {
+      setError('Please enter both numbers.');
     } else {
-      setDisplayValue(displayValue === '0' ? value : displayValue + value);
+      setError('');
+      setResult(`Result: ${Number(num1) + Number(num2)}`);
     }
   };
 
-  const handleOperatorClick = (nextOperator) => {
-    if (firstOperand === null) {
-      setFirstOperand(displayValue);
-    } else if (operator) {
-      const result = calculate();
-      setFirstOperand(result);
-      setDisplayValue(result);
-    }
-
-    setOperator(nextOperator);
-    setWaitingForSecondOperand(true);
-  };
-
-  const calculate = () => {
-    const prev = parseFloat(firstOperand);
-    const current = parseFloat(displayValue);
-
-    switch (operator) {
-      case '+':
-        return prev + current;
-      case '-':
-        return prev - current;
-      case '*':
-        return prev * current;
-      case '/':
-        if (current === 0) {
-          setError('Division by zero');
-          return 'Error';
-        }
-        return prev / current;
-      default:
-        return current;
+  const handleSubtract = () => {
+    if (!num1 || !num2) {
+      setError('Please enter both numbers.');
+    } else {
+      setError('');
+      setResult(`Result: ${Number(num1) - Number(num2)}`);
     }
   };
 
-  const handleEqualClick = () => {
-    if (operator && firstOperand !== null) {
-      const result = calculate();
-      setDisplayValue(result);
-      setFirstOperand(result);
-      setOperator(null);
-      setWaitingForSecondOperand(false);
+  const handleMultiply = () => {
+    if (!num1 || !num2) {
+      setError('Please enter both numbers.');
+    } else {
+      setError('');
+      setResult(`Result: ${Number(num1) * Number(num2)}`);
     }
   };
 
-  const handleClearClick = () => {
-    setDisplayValue('0');
-    setFirstOperand(null);
-    setOperator(null);
-    setWaitingForSecondOperand(false);
-    setError(null);
+  const handleDivide = () => {
+    if (!num1 || !num2) {
+      setError('Please enter both numbers.');
+    } else if (num2 === '0') {
+      setError('Error: Division by zero');
+      setResult('');
+    } else {
+      setError('');
+      setResult(`Result: ${Number(num1) / Number(num2)}`);
+    }
   };
 
   return (
-    <div className="calculator">
-      <div className="display">{displayValue}</div>
-      {error && <div className="error">{error}</div>}
-      <div className="operator-display">{operator}</div>
-      <div className="buttons">
-        <div className="row">
-          <button onClick={() => handleButtonClick('7')}>7</button>
-          <button onClick={() => handleButtonClick('8')}>8</button>
-          <button onClick={() => handleButtonClick('9')}>9</button>
-          <button onClick={() => handleOperatorClick('+')}>+</button>
-        </div>
-        <br/>
-        <div className="row">
-          <button onClick={() => handleButtonClick('4')}>4</button>
-          <button onClick={() => handleButtonClick('5')}>5</button>
-          <button onClick={() => handleButtonClick('6')}>6</button>
-          <button onClick={() => handleOperatorClick('-')}>-</button>
-        </div>
-        <br/>
-        <div className="row">
-          <button onClick={() => handleButtonClick('1')}>1</button>
-          <button onClick={() => handleButtonClick('2')}>2</button>
-          <button onClick={() => handleButtonClick('3')}>3</button>
-          <button onClick={() => handleOperatorClick('*')}>*</button>
-        </div>
-        <br/>
-        <div className="row">
-          <button onClick={() => handleButtonClick('0')}>0</button>
-          <button onClick={() => handleClearClick()}>C</button>
-          <button onClick={() => handleEqualClick()}>=</button>
-          <button onClick={() => handleOperatorClick('/')}>/</button>
-        </div>
-      </div>
+    <div>
+      <h2>Calculator</h2>
+      <input
+        type="number"
+        placeholder="Enter number 1"
+        value={num1}
+        onChange={(e) => setNum1(e.target.value)}
+        data-testid="num1"
+      />
+      <input
+        type="number"
+        placeholder="Enter number 2"
+        value={num2}
+        onChange={(e) => setNum2(e.target.value)}
+        data-testid="num2"
+      />
+      <br />
+      <button onClick={handleAdd}>Add</button>
+      <button onClick={handleSubtract}>Subtract</button>
+      <button onClick={handleMultiply}>Multiply</button>
+      <button onClick={handleDivide}>Divide</button>
+      <br />
+      {error && <div data-testid="result">{error}</div>}
+      {!error && result && <div data-testid="result">{result}</div>}
     </div>
   );
 }
