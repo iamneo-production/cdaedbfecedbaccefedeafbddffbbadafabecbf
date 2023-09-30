@@ -1,5 +1,5 @@
 // Calculator.js
-
+import Calculator from './Calculator.test';
 import React, { useState } from 'react';
 import './Calculator.css';
 
